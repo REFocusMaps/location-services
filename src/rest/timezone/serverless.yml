@@ -1,0 +1,8 @@
+timezone:
+  handler: src/rest/timezone/post.handler
+  events:
+    - http:
+        method: post
+        path: timezone
+        cors: true
+        private: true

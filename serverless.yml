@@ -1,0 +1,75 @@
+service:
+  name: location-services
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-dynamodb-local
+  - serverless-webpack
+
+custom:
+  serverless-offline:
+    httpPort: 3001
+    port: 3001
+    useChildProcesses: true
+    allowCache: true
+  dynamodb:
+    stages:
+      - local
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+  webpack:
+    webpackConfig: ./webpack.config.js
+    excludeFiles: src/**/*.spec.*
+    includeModules:
+      forceExclude:
+        - aws-sdk
+    packager: npm
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${env:ENV}
+  profile: ${env:AWS_PROFILE}
+  region: ${env:AWS_LOCAL_REGION}
+  api-name: location-services
+  apiKeys:
+    - name: location-services-api-key
+      value: ${env:API_KEY_VALUE}
+  timeout: 30 
+  logs:
+    restApi: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:Query
+      Resource:
+        - 'Fn::GetAtt': [ Cache, Arn ]
+
+functions:
+  - ${file(src/rest/geocode/serverless.yml)}
+  - ${file(src/rest/timezone/serverless.yml)}
+
+resources:
+  Resources:
+    Cache:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST

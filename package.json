@@ -1,0 +1,55 @@
+{
+    "name": "location-services",
+    "version": "1.0.0",
+    "description": "",
+    "author": "Austin Mueller",
+    "license": "UNLICENSED",
+    "scripts": {
+        "lint": "eslint . --ext .ts",
+        "test": "jest",
+        "build": "./scripts/build.sh",
+        "deploy:staging": "npm run build && sls deploy --env staging",
+        "serve:local": "sls offline start --env local"
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.tsx?$": "ts-jest"
+        },
+        "moduleFileExtensions": [
+            "ts",
+            "js"
+        ],
+        "testRegex": "^.+\\.spec\\.ts$"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.62",
+        "@types/jest": "^26.0.14",
+        "@types/node": "^14.11.1",
+        "@typescript-eslint/eslint-plugin": "^3.10.1",
+        "@typescript-eslint/parser": "^3.10.1",
+        "aws-lambda": "^1.0.6",
+        "aws-sdk": "^2.756.0",
+        "eslint": "^7.9.0",
+        "fork-ts-checker-webpack-plugin": "^5.2.0",
+        "jest": "^26.4.2",
+        "serverless": "^2.1.1",
+        "serverless-dotenv-plugin": "^3.0.0",
+        "serverless-dynamodb-local": "^0.2.39",
+        "serverless-offline": "^6.7.0",
+        "serverless-webpack": "^5.3.5",
+        "ts-jest": "^26.4.0",
+        "ts-loader": "^8.0.4",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.7",
+        "webpack": "^4.44.2",
+        "webpack-node-externals": "^2.5.2"
+    },
+    "peerDependencies": {
+        "aws-sdk": "^2.756.0"
+    },
+    "dependencies": {
+        "@google/maps": "^1.1.3",
+        "@types/google__maps": "^0.5.13",
+        "moment": "^2.27.0"
+    }
+}

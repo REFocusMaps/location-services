@@ -1,0 +1,8 @@
+geocode:
+  handler: src/rest/geocode/post.handler
+  events:
+    - http:
+        method: post
+        path: geocode
+        cors: true
+        private: true
