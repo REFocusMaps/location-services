@@ -25,11 +25,7 @@ All changes must be commited then run the following
 - Integrate GIT_HASH into logs
 - Setup lambda for reporting to elk
 - Finish deployment script
-  - run lint
-  - run unit tests
   - run e2e tests
   - (if any of those fail, fail build)
-  - make sure all changes are committed
-  - pipe git hash into env
 - Integrate into other parts of system
   

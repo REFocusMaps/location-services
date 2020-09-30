@@ -1,4 +1,4 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { getTimeZoneForAddress } from '../../helpers/timezone';
 
 interface RequestBody {
@@ -7,14 +7,15 @@ interface RequestBody {
 
 export const handler = async (
     event: APIGatewayEvent
-): Promise<any> => {
+): Promise<APIGatewayProxyResult> => {
     const eventBody: RequestBody = JSON.parse(event.body || '{}');
 
     const requestValid = isRequestValid(eventBody);
     if (!requestValid) {
         console.log(`Invalid request body: ${JSON.stringify(event.body)}`);
         return {
-            statusCode: 400
+            statusCode: 400,
+            body: `Invalid request body: ${JSON.stringify(event.body)}`
         };
     }
 
@@ -35,6 +36,7 @@ export const handler = async (
         console.log(error);
         return {
             statusCode: 500,
+            body: error.message
         };
     }
 };

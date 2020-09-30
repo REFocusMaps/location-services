@@ -102,7 +102,7 @@ async function getTimeZoneFromGoogle(address: string): Promise<TimeZoneResponse 
     return result;
 }
 
-function requestTimeZone(lat: number, lng: number): Promise<any> {
+function requestTimeZone(lat: number, lng: number): Promise<googleMaps.ClientResponse<googleMaps.TimeZoneResponse>> {
     return new Promise((resolve, reject) => {
         const client = googleMaps.createClient({
             key: apiKeys[Math.floor(Math.random() * apiKeys.length)]

@@ -118,7 +118,7 @@ async function geocodeAddressFromGoogle(address: string): Promise<GeocoderRespon
     return result;
 }
 
-function requestGeocode(address: string): Promise<any> {
+function requestGeocode(address: string): Promise<googleMaps.ClientResponse<googleMaps.GeocodingResponse<googleMaps.GeocodingResponseStatus>>> {
     return new Promise((resolve, reject) => {
         const client = googleMaps.createClient({
             key: apiKeys[Math.floor(Math.random() * apiKeys.length)]

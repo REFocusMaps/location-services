@@ -1,4 +1,5 @@
 geocode:
+  name: geocode_${env:GIT_HASH}
   handler: src/rest/geocode/post.handler
   events:
     - http:
