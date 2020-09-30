@@ -1,5 +1,5 @@
 timezone:
-  name: geocode_${env:GIT_HASH}
+  name: ${opt:stage, self:provider.stage, 'dev'}-timezone # _${env:GIT_HASH}
   handler: src/rest/timezone/post.handler
   events:
     - http:

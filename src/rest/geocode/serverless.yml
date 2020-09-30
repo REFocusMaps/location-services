@@ -1,5 +1,5 @@
 geocode:
-  name: geocode_${env:GIT_HASH}
+  name: ${opt:stage, self:provider.stage, 'dev'}-geocode #_${env:GIT_HASH}
   handler: src/rest/geocode/post.handler
   events:
     - http:
