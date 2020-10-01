@@ -1,6 +1,6 @@
 elkReporter:
   name: location-services_elkReporter_${env:GIT_HASH}
-  handler: src/hooks/cloudwatch/elkReporter.handler
+  handler: src/hooks/cloudwatch/elkReporter/index.handler
   events:
     - http:
         method: post
