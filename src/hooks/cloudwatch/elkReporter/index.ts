@@ -1,7 +1,8 @@
 import { CloudWatchLogsLogEvent } from 'aws-lambda';
 
 export const handler = async (
-    event: CloudWatchLogsLogEvent
+    event: any
 ): Promise<void> => {
-    console.log(event);
+    const decodedPayload = Buffer.from(event.awslogs.data, 'base64').toString();
+    console.log(decodedPayload);
 };
