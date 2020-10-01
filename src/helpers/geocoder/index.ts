@@ -41,8 +41,6 @@ export const geocodeAddress = async (address: string, cacheTimeoutInDays?: numbe
 };
 
 async function geocodeAddressFromCache(address: string, cacheTimeoutInDays?: number): Promise<GeocoderResponse | undefined> {
-    console.log(getOrThrowEnv(ENV_VARS.TABLE_NAME));
-
     const docClient = getDocClient();
     const params = {
         TableName: getOrThrowEnv(ENV_VARS.TABLE_NAME),
