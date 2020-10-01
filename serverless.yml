@@ -55,6 +55,7 @@ provider:
 functions:
   - ${file(src/rest/geocode/serverless.yml)}
   - ${file(src/rest/timezone/serverless.yml)}
+  - ${file(src/hooks/cloudwatch/elkReporter/serverless.yml)}
 
 resources:
   Resources:
