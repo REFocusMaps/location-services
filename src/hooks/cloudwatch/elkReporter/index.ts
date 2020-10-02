@@ -77,13 +77,14 @@ async function reportLog(serviceName: string, timestamp: Date, message: string):
     try {
         const client = getElasticClient();
         if (client) {
-            await client.index({
+            const result = await client.index({
                 index: `${serviceName}_log`,
                 body: {
                     timestamp: timestamp.toISOString(),
                     message,
                 },
             });
+            console.log(result);
         } else {
             console.log('No elasticsearch client, skipping.');
         }
@@ -96,7 +97,7 @@ async function reportEvent(serviceName: string, timestamp: Date, eventType: stri
     try {
         const client = getElasticClient();
         if (client) {
-            await client.index({
+            const result = await client.index({
                 index: `${serviceName}_event`,
                 body: {
                     type: eventType,
@@ -104,6 +105,7 @@ async function reportEvent(serviceName: string, timestamp: Date, eventType: stri
                     data,
                 },
             });
+            console.log(result);
         } else {
             console.log('No elasticsearch client, skipping.');
         }
