@@ -1,6 +1,6 @@
 import { CloudWatchLogsEvent, CloudWatchLogsDecodedData, CloudWatchLogsLogEvent } from 'aws-lambda';
 import * as zlib from 'zlib';
-import { Client, ClientOptions } from '@elastic/elasticsearch';
+import { Client } from '@elastic/elasticsearch';
 
 const { ELASTIC_URL, ELASTIC_USER, ELASTIC_PASS } = process.env;
 
