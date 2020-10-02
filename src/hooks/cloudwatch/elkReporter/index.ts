@@ -108,8 +108,16 @@ async function reportEvent(serviceName: string, timestamp: Date, eventType: stri
                 },
             };
             console.log(elkPayload);
-            const result = await elasticClient.index(elkPayload);
+            const result = await elasticClient.index(elkPayload,
+                {
+                    ignore: [404],
+                    maxRetries: 3
+                }, (err, result) => {
+                    console.log(result);
+                    if (err) console.log(err);
+                });
             const x = await elasticClient.ping();
+            console.log('AFTER! NEXT IS THE RESULT!');
             console.log(result);
         } else {
             console.log('No elasticsearch client, skipping.');
