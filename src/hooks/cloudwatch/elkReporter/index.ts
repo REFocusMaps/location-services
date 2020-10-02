@@ -2,8 +2,14 @@ import { CloudWatchLogsEvent, CloudWatchLogsDecodedData, CloudWatchLogsLogEvent 
 import * as zlib from 'zlib';
 import { Client } from '@elastic/elasticsearch';
 
-const { API_STAGE, GIT_HASH, ELASTIC_URL, ELASTIC_USER, ELASTIC_PASS } = process.env;
-const elasticClient = getElasticClient();
+const { ELASTIC_URL, ELASTIC_USER, ELASTIC_PASS } = process.env;
+
+interface InvokeReport {
+    initDuration?: string;
+    billedDuration?: string;
+    runDuration?: string;
+    maxMemUsed?: string;
+}
 
 export const handler = async (
     event: CloudWatchLogsEvent
@@ -25,7 +31,7 @@ export const handler = async (
         console.log(`Timestamp: ${timestamp.toISOString()}`);
 
         if (logEvent.message.includes('REPORT RequestId')) {
-            const eventData = messageParts.reduce((acc: any, curr) => {
+            const eventData = messageParts.reduce((acc: InvokeReport, curr) => {
                 if (curr.includes('Init Duration')) {
                     acc.initDuration = curr.split(' ')[2];
                 } else if (curr.includes('Billed Duration')) {
@@ -99,19 +105,3 @@ async function reportEvent(serviceName: string, timestamp: Date, eventType: stri
         console.log(error);
     }
 }
-[
-    '2020-10-01T01:43:21.724Z',
-    '94e7582d-8036-4f2f-b2d3-3c1d93959f32',
-    'INFO',
-    'CACHE HIT for 662 forestdale rd, royal oak, mi\n'
-]
-
-[
-    'REPORT RequestId: 94e7582d-8036-4f2f-b2d3-3c1d93959f32',
-    'Init Duration: 391.78 ms',
-    'Billed Duration: 200 ms',
-    'Duration: 103.70 ms',
-    'Memory Size: 1024 MB',
-    'Max Memory Used: 88 MB',
-    '\n'
-]

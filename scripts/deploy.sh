@@ -1,8 +1,8 @@
 #!/bin/bash
 npm run lint && npm run test
-
-RESULT=$?
-echo $RESULT
+if [[ "$?" == "1" ]] ; then
+    exit 1
+fi
 
 GIT_STATUS=$(git status)
 GIT_HASH_SHORT=$(git rev-parse --short HEAD)
