@@ -7,10 +7,10 @@ const { ELASTIC_URL, ELASTIC_USER, ELASTIC_PASS } = process.env;
 const elasticClient = getElasticClient();
 
 interface InvokeReport {
-    initDuration?: string;
-    billedDuration?: string;
-    runDuration?: string;
-    maxMemUsed?: string;
+    initDuration?: number;
+    billedDuration?: number;
+    runDuration?: number;
+    maxMemUsed?: number;
 }
 
 export const handler = async (
@@ -34,13 +34,13 @@ export const handler = async (
         if (logEvent.message.includes('REPORT RequestId')) {
             const eventData = messageParts.reduce((acc: InvokeReport, curr) => {
                 if (curr.includes('Init Duration')) {
-                    acc.initDuration = curr.split(' ').slice(-2, -1)[0];
+                    acc.initDuration = Number(curr.split(' ').slice(-2, -1)[0]);
                 } else if (curr.includes('Billed Duration')) {
-                    acc.billedDuration = curr.split(' ').slice(-2, -1)[0];
+                    acc.billedDuration = Number(curr.split(' ').slice(-2, -1)[0]);
                 } else if (curr.includes('Duration')) {
-                    acc.runDuration = curr.split(' ').slice(-2, -1)[0];
+                    acc.runDuration = Number(curr.split(' ').slice(-2, -1)[0]);
                 } else if (curr.includes('Max Memory Used')) {
-                    acc.maxMemUsed = curr.split(' ').slice(-2, -1)[0];
+                    acc.maxMemUsed = Number(curr.split(' ').slice(-2, -1)[0]);
                 }
                 return acc;
             }, {});

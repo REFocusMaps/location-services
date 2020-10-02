@@ -22,8 +22,6 @@ All changes must be commited then run the following
   - Geocode address once, check that it was a cache miss
   - Geocode address again, check that is was a cache hit
   - Same for timezone
-- Integrate GIT_HASH into logs
-- Setup lambda for reporting to elk
 - Finish deployment script
   - run e2e tests
   - (if any of those fail, fail build)
