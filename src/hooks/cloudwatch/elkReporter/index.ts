@@ -19,6 +19,7 @@ export const handler = async (
     const payload: CloudWatchLogsDecodedData = JSON.parse(jsonPayload);
 
     const serviceName = payload.logGroup.split('/').slice(-1)[0];
+    console.log(serviceName);
 
     Promise.all(payload.logEvents.map(async (logEvent: CloudWatchLogsLogEvent) => {
         if (logEvent.message.includes('START RequestId') || logEvent.message.includes('END RequestId')) {
@@ -43,9 +44,8 @@ export const handler = async (
                 return acc;
             }, {});
             await reportEvent(serviceName, timestamp, 'Invoke Report', eventData);
-        } else if (logEvent.message.includes('__ELK_JSON__|:|')) {
-            const elkJson = logMessage.split('|:|')[1];
-            console.log(logMessage);
+        } else if (logEvent.message.includes('__ELK_JSON__:')) {
+            const elkJson = logMessage.split('__ELK_JSON__:')[1];
             const elkEventData = JSON.parse(elkJson);
             await reportEvent(serviceName, timestamp, elkEventData.type, elkEventData.data);
         } else {
@@ -104,3 +104,5 @@ async function reportEvent(serviceName: string, timestamp: Date, eventType: stri
         console.log(error);
     }
 }
+'__ELK_JSON__:{"type":"Cache Result","data":{"cacheHit":1,"cacheMiss":0}}'
+
