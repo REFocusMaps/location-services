@@ -22,7 +22,7 @@ export const handler = async (
 
     const serviceName = payload.logGroup.split('/').slice(-1)[0];
 
-    Promise.all(payload.logEvents.map(async (logEvent: CloudWatchLogsLogEvent) => {
+    await Promise.all(payload.logEvents.map(async (logEvent: CloudWatchLogsLogEvent) => {
         if (logEvent.message.includes('START RequestId') || logEvent.message.includes('END RequestId')) {
             // We dont need to report these messages as they contain no useful information
             return;
