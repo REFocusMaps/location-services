@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { getTimeZoneForAddress } from '../../helpers/timezone';
+import { logElkEvent } from '../../helpers/log';
 
 interface RequestBody {
     address: string,
@@ -22,11 +23,16 @@ export const handler = async (
     try {
         const result = await getTimeZoneForAddress(eventBody.address);
         if (result) {
+            logElkEvent('Cache Result', {
+                cacheHit: result.cacheHit ? 1 : 0,
+                cacheMiss: result.cacheHit ? 0 : 1
+            });
             return {
                 statusCode: 200,
                 body: JSON.stringify(result),
             };
         } else {
+            console.log(`Could not geocode address ${eventBody.address}`);
             return {
                 statusCode: 500,
                 body: `Could not get timezone for address ${eventBody.address}`

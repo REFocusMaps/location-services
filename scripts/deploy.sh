@@ -1,6 +1,9 @@
 #!/bin/bash
 npm run lint && npm run test
 
+RESULT=$?
+echo $RESULT
+
 GIT_STATUS=$(git status)
 GIT_HASH_SHORT=$(git rev-parse --short HEAD)
 
