@@ -69,7 +69,8 @@ function getElasticClient(): Client | undefined {
             password: ELASTIC_PASS,
         },
     });
-
+    console.log(client);
+    
     return client;
 }
 
