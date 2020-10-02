@@ -30,10 +30,7 @@ function getDocClient(): AWS.DynamoDB.DocumentClient {
 export const geocodeAddress = async (address: string, cacheTimeoutInDays?: number): Promise<GeocoderResponse | undefined> => {
     let result = await geocodeAddressFromCache(address, cacheTimeoutInDays);
 
-    if (result) {
-        console.log(`CACHE HIT for ${address}`);
-    } else {
-        console.log(`CACHE MISS for ${address}`);
+    if (!result) {
         result = await geocodeAddressFromGoogle(address);
     }
 

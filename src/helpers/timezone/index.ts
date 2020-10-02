@@ -30,10 +30,7 @@ function getDocClient(): AWS.DynamoDB.DocumentClient {
 export const getTimeZoneForAddress = async (address: string): Promise<TimeZoneResponse | undefined> => {
     let result = await getTimeZoneFromCache(address);
 
-    if (result) {
-        console.log(`CACHE HIT for ${address}`);
-    } else {
-        console.log(`CACHE MISS for ${address}`);
+    if (!result) {
         result = await getTimeZoneFromGoogle(address);
     }
 
