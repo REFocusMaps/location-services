@@ -19,7 +19,6 @@ export const handler = async (
     const payload: CloudWatchLogsDecodedData = JSON.parse(jsonPayload);
 
     const serviceName = payload.logGroup.split('/').slice(-1)[0];
-    console.log(serviceName);
 
     Promise.all(payload.logEvents.map(async (logEvent: CloudWatchLogsLogEvent) => {
         if (logEvent.message.includes('START RequestId') || logEvent.message.includes('END RequestId')) {
@@ -77,13 +76,17 @@ function getElasticClient(): Client | undefined {
 async function reportLog(serviceName: string, timestamp: Date, message: string): Promise<void> {
     try {
         const client = getElasticClient();
-        client && await client.index({
-            index: `${serviceName}_log`,
-            body: {
-                timestamp: timestamp.toISOString(),
-                message,
-            },
-        });
+        if (client) {
+            await client.index({
+                index: `${serviceName}_log`,
+                body: {
+                    timestamp: timestamp.toISOString(),
+                    message,
+                },
+            });
+        } else {
+            console.log('No elasticsearch client, skipping.');
+        }
     } catch (error) {
         console.log(error);
     }
@@ -92,14 +95,18 @@ async function reportLog(serviceName: string, timestamp: Date, message: string):
 async function reportEvent(serviceName: string, timestamp: Date, eventType: string, data: any): Promise<void> {
     try {
         const client = getElasticClient();
-        client && await client.index({
-            index: `${serviceName}_event`,
-            body: {
-                type: eventType,
-                timestamp: timestamp.toISOString(),
-                data,
-            },
-        });
+        if (client) {
+            await client.index({
+                index: `${serviceName}_event`,
+                body: {
+                    type: eventType,
+                    timestamp: timestamp.toISOString(),
+                    data,
+                },
+            });
+        } else {
+            console.log('No elasticsearch client, skipping.');
+        }
     } catch (error) {
         console.log(error);
     }
