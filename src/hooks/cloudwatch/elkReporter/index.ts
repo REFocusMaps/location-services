@@ -1,8 +1,10 @@
 import { CloudWatchLogsEvent, CloudWatchLogsDecodedData, CloudWatchLogsLogEvent } from 'aws-lambda';
 import * as zlib from 'zlib';
-import { Client } from '@elastic/elasticsearch';
+import { Client, ClientOptions } from '@elastic/elasticsearch';
 
 const { ELASTIC_URL, ELASTIC_USER, ELASTIC_PASS } = process.env;
+
+const elasticClient = getElasticClient();
 
 interface InvokeReport {
     initDuration?: string;
@@ -69,16 +71,14 @@ function getElasticClient(): Client | undefined {
             password: ELASTIC_PASS,
         },
     });
-    console.log(client);
-    
+
     return client;
 }
 
 async function reportLog(serviceName: string, timestamp: Date, message: string): Promise<void> {
     try {
-        const client = getElasticClient();
-        if (client) {
-            const result = await client.index({
+        if (elasticClient) {
+            const result = await elasticClient.index({
                 index: `${serviceName}_log`,
                 body: {
                     timestamp: timestamp.toISOString(),
@@ -96,9 +96,8 @@ async function reportLog(serviceName: string, timestamp: Date, message: string):
 
 async function reportEvent(serviceName: string, timestamp: Date, eventType: string, data: any): Promise<void> {
     try {
-        const client = getElasticClient();
-        if (client) {
-            const result = await client.index({
+        if (elasticClient) {
+            const result = await elasticClient.index({
                 index: `${serviceName}_event`,
                 body: {
                     type: eventType,
