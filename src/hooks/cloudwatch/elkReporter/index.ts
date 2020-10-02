@@ -28,7 +28,6 @@ export const handler = async (
         const timestamp = new Date(logEvent.timestamp);
         const messageParts = logEvent.message.split('\t');
         const logMessage = messageParts.slice(3).join('\t');
-        console.log(`Timestamp: ${timestamp.toISOString()}`);
 
         if (logEvent.message.includes('REPORT RequestId')) {
             const eventData = messageParts.reduce((acc: InvokeReport, curr) => {
@@ -43,10 +42,9 @@ export const handler = async (
                 }
                 return acc;
             }, {});
-            console.log(eventData);
             await reportEvent(serviceName, timestamp, 'Invoke Report', eventData);
-        } else if (logEvent.message.includes('__ELK_JSON__:')) {
-            const elkJson = logMessage.split(':')[1];
+        } else if (logEvent.message.includes('__ELK_JSON__|:|')) {
+            const elkJson = logMessage.split('|:|')[1];
             console.log(logMessage);
             const elkEventData = JSON.parse(elkJson);
             await reportEvent(serviceName, timestamp, elkEventData.type, elkEventData.data);
