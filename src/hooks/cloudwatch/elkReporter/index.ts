@@ -104,5 +104,3 @@ async function reportEvent(serviceName: string, timestamp: Date, eventType: stri
         console.log(error);
     }
 }
-'__ELK_JSON__:{"type":"Cache Result","data":{"cacheHit":1,"cacheMiss":0}}'
-
