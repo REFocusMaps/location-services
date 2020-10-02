@@ -33,13 +33,13 @@ export const handler = async (
         if (logEvent.message.includes('REPORT RequestId')) {
             const eventData = messageParts.reduce((acc: InvokeReport, curr) => {
                 if (curr.includes('Init Duration')) {
-                    acc.initDuration = curr.split(' ')[2];
+                    acc.initDuration = curr.split(' ').slice(-2, -1)[0];
                 } else if (curr.includes('Billed Duration')) {
-                    acc.billedDuration = curr.split(' ')[2];
+                    acc.billedDuration = curr.split(' ').slice(-2, -1)[0];
                 } else if (curr.includes('Duration')) {
-                    acc.runDuration = curr.split(' ')[2];
+                    acc.runDuration = curr.split(' ').slice(-2, -1)[0];
                 } else if (curr.includes('Max Memory Used')) {
-                    acc.maxMemUsed = curr.split(' ')[2];
+                    acc.maxMemUsed = curr.split(' ').slice(-2, -1)[0];
                 }
                 return acc;
             }, {});
@@ -47,6 +47,7 @@ export const handler = async (
             await reportEvent(serviceName, timestamp, 'Invoke Report', eventData);
         } else if (logEvent.message.includes('__ELK_JSON__:')) {
             const elkJson = logMessage.split(':')[1];
+            console.log(logMessage);
             const elkEventData = JSON.parse(elkJson);
             await reportEvent(serviceName, timestamp, elkEventData.type, elkEventData.data);
         } else {
