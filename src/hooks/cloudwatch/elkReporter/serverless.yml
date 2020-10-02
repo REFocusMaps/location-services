@@ -1,7 +1,6 @@
 elkReporter:
   name: location-services_elkReporter_${env:GIT_HASH}
   handler: src/hooks/cloudwatch/elkReporter/index.handler
-  timeout: 300
   events:
     - cloudwatchLog: /aws/lambda/location-services_geocode_${env:GIT_HASH}
     - cloudwatchLog: /aws/lambda/location-services_timezone_${env:GIT_HASH}
