@@ -1,6 +1,7 @@
 import { CloudWatchLogsEvent, CloudWatchLogsDecodedData, CloudWatchLogsLogEvent } from 'aws-lambda';
 import * as zlib from 'zlib';
 import { Client } from '@elastic/elasticsearch';
+import { parseLoggedElkEvent } from '../../../helpers/log';
 
 const { ELASTIC_URL, ELASTIC_USER, ELASTIC_PASS } = process.env;
 
@@ -46,8 +47,7 @@ export const handler = async (
             }, {});
             await reportEvent(serviceName, timestamp, 'Invoke Report', eventData);
         } else if (logEvent.message.includes('__ELK_JSON__:')) {
-            const elkJson = logMessage.split('__ELK_JSON__:')[1];
-            const elkEventData = JSON.parse(elkJson);
+            const elkEventData = parseLoggedElkEvent(logMessage);
             await reportEvent(serviceName, timestamp, elkEventData.type, elkEventData.data);
         } else {
             await reportLog(serviceName, timestamp, logMessage);
