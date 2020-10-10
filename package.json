@@ -7,8 +7,6 @@
     "scripts": {
         "lint": "eslint . --ext .ts",
         "test": "jest",
-        "build": "./scripts/build.sh",
-        "deploy:staging": "npm run build && sls deploy --env staging",
         "serve:local": "sls offline start --env local"
     },
     "jest": {

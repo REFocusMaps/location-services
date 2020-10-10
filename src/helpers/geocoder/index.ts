@@ -14,6 +14,7 @@ export interface GeocoderResponse {
     lat: number,
     lng: number,
     cacheHit: boolean,
+    fullResponseJSON: string
 }
 
 function getDocClient(): AWS.DynamoDB.DocumentClient {
@@ -57,7 +58,8 @@ async function geocodeAddressFromCache(address: string, cacheTimeoutInDays?: num
                 formattedAddress: (item.sk as string).split('#').slice(1).join('#'),
                 lat: item.Lat,
                 lng: item.Lng,
-                cacheHit: true
+                cacheHit: true,
+                fullResponseJSON: item.FullGeocoderResponseJSON
             };
         }
     } catch (error) {
@@ -97,14 +99,16 @@ async function geocodeAddressFromGoogle(address: string): Promise<GeocoderRespon
         const lat = geocoderResult.geometry.location.lat;
         const lng = geocoderResult.geometry.location.lng;
 
-        await cacheGeocoderResult(address, formattedAddress, lat, lng, JSON.stringify(geocoderResult));
+        const fullResponseJSON = JSON.stringify(geocoderResult);
+        await cacheGeocoderResult(address, formattedAddress, lat, lng, fullResponseJSON);
 
         result = {
             address,
             formattedAddress,
             lat,
             lng,
-            cacheHit: false
+            cacheHit: false,
+            fullResponseJSON,
         };
     } catch (error) {
         console.log(error);
