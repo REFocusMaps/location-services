@@ -1,5 +1,3 @@
-import { type } from "os";
-
 export function buildResponse(statusCode: number, body: any) {
     return {
         headers: {
