@@ -1,4 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { buildResponse } from '../../helpers/rest';
 import { geocodeAddress } from '../../helpers/geocoder';
 import { logElkEvent } from '../../helpers/log';
 
@@ -14,10 +15,7 @@ export const handler = async (
     const requestValid = isRequestValid(eventBody);
     if (!requestValid) {
         console.log(`Invalid request body: ${event.body}`);
-        return {
-            statusCode: 400,
-            body: `Invalid request body: ${event.body}`
-        };
+        return buildResponse(400, `Invalid request body: ${event.body}`);
     }
 
     try {
@@ -27,23 +25,14 @@ export const handler = async (
                 cacheHit: result?.cacheHit ? 1 : 0,
                 cacheMiss: result?.cacheHit ? 0 : 1
             });
-            return {
-                statusCode: 200,
-                body: JSON.stringify(result),
-            };
+            return buildResponse(200, result);
         } else {
             console.log(`Could not geocode address ${eventBody.address}`);
-            return {
-                statusCode: 500,
-                body: `Could not geocode address ${eventBody.address}`
-            };
+            return buildResponse(500, `Could not geocode address ${eventBody.address}`);
         }
     } catch (error) {
         console.log(error);
-        return {
-            statusCode: 500,
-            body: error.message
-        };
+        return buildResponse(500, error.message);
     }
 };
 
