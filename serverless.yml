@@ -37,9 +37,6 @@ provider:
   profile: ${env:AWS_PROFILE}
   region: ${env:AWS_LOCAL_REGION}
   api-name: location-services
-  apiKeys:
-    - name: location-services-api-key
-      value: ${env:API_KEY_VALUE}
   timeout: 30 
   logs:
     restApi: true

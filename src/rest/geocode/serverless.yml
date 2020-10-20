@@ -6,4 +6,3 @@ geocode:
         method: post
         path: geocode
         cors: true
-        private: true

@@ -2,6 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { getTimeZoneForAddress } from '../../helpers/timezone';
 import { logElkEvent } from '../../helpers/log';
 import { buildResponse } from '../../helpers/rest';
+import { ENV_VARS, getOrThrowEnv } from '../../helpers/env';
 
 interface RequestBody {
     address: string,
@@ -10,9 +11,10 @@ interface RequestBody {
 export const handler = async (
     event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
+    const apiKey = event.headers['x-api-key'];
     const eventBody: RequestBody = JSON.parse(event.body || '{}');
 
-    const requestValid = isRequestValid(eventBody);
+    const requestValid = isRequestValid(eventBody, apiKey);
     if (!requestValid) {
         console.log(`Invalid request body: ${JSON.stringify(event.body)}`);
         return buildResponse(400, `Invalid request body: ${JSON.stringify(event.body)}`);
@@ -36,6 +38,10 @@ export const handler = async (
     }
 };
 
-function isRequestValid(reqBody: RequestBody) {
+function isRequestValid(reqBody: RequestBody, apiKey: string) {
+    if (apiKey !== getOrThrowEnv(ENV_VARS.API_KEY_VALUE)) {
+        return false;
+    }
+    
     return !!reqBody.address;
 }

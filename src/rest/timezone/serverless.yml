@@ -6,4 +6,3 @@ timezone:
         method: post
         path: timezone
         cors: true
-        private: true
