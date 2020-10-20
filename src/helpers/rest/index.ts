@@ -2,7 +2,7 @@ export function buildResponse(statusCode: number, body: any) {
     return {
         headers: {
             'Access-Control-Expose-Headers': 'x-api-key',
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type,x-api-key',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST',
         },
