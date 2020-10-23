@@ -37,6 +37,7 @@ provider:
   profile: ${env:AWS_PROFILE}
   region: ${env:AWS_LOCAL_REGION}
   api-name: location-services
+  endpointType: REGIONAL
   timeout: 30 
   logs:
     restApi: true
