@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk';
-import * as googleMaps from '@google/maps';
+// import * as googleMaps from '@google/maps';
+import * as geoTz from 'geo-tz';
 import { geocodeAddress } from '../geocoder';
 import { getOrThrowEnv, ENV_VARS } from '../env';
 
@@ -77,19 +78,24 @@ async function getTimeZoneFromGoogle(address: string): Promise<TimeZoneResponse 
     }
 
     try {
-        const response = await requestTimeZone(geocodeResult.lat, geocodeResult.lng);
-        const timeZoneResult = response.json;
-        if (timeZoneResult.status !== 'OK') {
-            console.log(`Timezone not ok: ${JSON.stringify(response.json)}`);
+        // const response = await requestTimeZone(geocodeResult.lat, geocodeResult.lng);
+        // const timeZoneResult = response.json;
+        // if (timeZoneResult.status !== 'OK') {
+        //     console.log(`Timezone not ok: ${JSON.stringify(response.json)}`);
+        //     return;
+        // }
+        const timeZoneIds = geoTz(geocodeResult.lat, geocodeResult.lng);
+        if (timeZoneIds.length === 0) {
+            console.log(`Could not find timezone for: ${address}`);
             return;
         }
 
-        await cacheTimeZoneResult(address, geocodeResult.formattedAddress, timeZoneResult.timeZoneId, JSON.stringify(timeZoneResult));
+        await cacheTimeZoneResult(address, geocodeResult.formattedAddress, timeZoneIds[0], JSON.stringify({}));
 
         result = {
             address,
             formattedAddress: geocodeResult.formattedAddress,
-            timeZoneId: timeZoneResult.timeZoneId,
+            timeZoneId: timeZoneIds[0],
             cacheHit: false
         };
     } catch (error) {
@@ -99,26 +105,26 @@ async function getTimeZoneFromGoogle(address: string): Promise<TimeZoneResponse 
     return result;
 }
 
-function requestTimeZone(lat: number, lng: number): Promise<googleMaps.ClientResponse<googleMaps.TimeZoneResponse>> {
-    return new Promise((resolve, reject) => {
-        const client = googleMaps.createClient({
-            key: apiKeys[Math.floor(Math.random() * apiKeys.length)]
-        });
-        client.timezone({
-            location: {
-                lat,
-                lng,
-            },
-            timestamp: new Date().getTime() / 1000
-        }, (error, response) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(response);
-            }
-        });
-    });
-}
+// function requestTimeZone(lat: number, lng: number): Promise<googleMaps.ClientResponse<googleMaps.TimeZoneResponse>> {
+//     return new Promise((resolve, reject) => {
+//         const client = googleMaps.createClient({
+//             key: apiKeys[Math.floor(Math.random() * apiKeys.length)]
+//         });
+//         client.timezone({
+//             location: {
+//                 lat,
+//                 lng,
+//             },
+//             timestamp: new Date().getTime() / 1000
+//         }, (error, response) => {
+//             if (error) {
+//                 reject(error);
+//             } else {
+//                 resolve(response);
+//             }
+//         });
+//     });
+// }
 
 async function cacheTimeZoneResult(address: string, formattedAddress: string, timeZoneId: string, fullResponseJson: string): Promise<void> {
     const docClient = getDocClient();
