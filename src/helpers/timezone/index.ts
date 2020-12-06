@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
 import * as googleMaps from '@google/maps';
-import * as geoTz from 'geo-tz';
+import geoTz from 'geo-tz';
 import { geocodeAddress } from '../geocoder';
 import { getOrThrowEnv, ENV_VARS } from '../env';
 
@@ -100,7 +100,7 @@ async function getTimeZoneFromCache(address: string): Promise<TimeZoneResponse |
   return result;
 }
 
-export const getTimeZoneForLatLng = async (lat: number, lng: number): Promise<TimeZoneResponse | undefined> => {
+export const getTimeZoneForLatLng = (lat: number, lng: number): TimeZoneResponse | undefined => {
   const timeZoneIds = geoTz(lat, lng);
   if (timeZoneIds.length === 0) {
     console.log(`Could not find timezone for: [${lat}, ${lng}]`);

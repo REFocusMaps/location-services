@@ -21,7 +21,8 @@
         "inlineSourceMap": true
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "decs.d.ts"
     ],
     "exclude": [
         "**/*.spec.ts"

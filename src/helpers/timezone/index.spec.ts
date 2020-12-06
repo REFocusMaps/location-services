@@ -1,6 +1,13 @@
-// import { getTimeZoneForAddress } from '.';
+import { getTimeZoneForAddress, getTimeZoneForLatLng } from '.';
 
 describe('Time Zone', () => {
+    describe('getTimeZoneForLatLng', () => {
+      it('should return a timezoneId if it could find the timezone from a lat long', () => {
+        const result = getTimeZoneForLatLng(42.788481, -84.55809479999999);
+        console.log(result);
+        expect(result?.timeZoneId).toEqual('America/Detroit');
+      });
+    });
     it('should get the result from the cache if available and not expired', async () => {
         expect(true).toEqual(true);
         // const address = '10229 longford, south lyon, michigan 48178';
