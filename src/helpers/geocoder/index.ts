@@ -69,13 +69,13 @@ async function geocodeAddressFromCache(address: string, cacheTimeoutInDays?: num
     return result;
 }
 
-function cachedItemValid(cacheTimestamp: number, cacheTimeoutInDays?: number) {
+function cachedItemValid(cacheTimestamp?: number, cacheTimeoutInDays?: number) {
     const millisecondsPerDay = 8.64e+7;
-    if (!cacheTimestamp) {
+    if (cacheTimestamp == null) {
         return false;
     }
 
-    if (!cacheTimeoutInDays) {
+    if (cacheTimeoutInDays == null) {
         return true;
     }
 
